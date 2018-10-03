@@ -40,7 +40,7 @@ Look for config files in the following directories:
 * [Docker Compose](https://docs.docker.com/compose/)
 
 ## License
-`pompa` is released under the [LGPL](LICENSE).
+`pompa` is released under the terms of [lgpl-3.0](LICENSE).
 
 ## Author
 
