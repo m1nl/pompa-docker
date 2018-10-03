@@ -1,0 +1,6 @@
+# ignore swap files
+.DS_Store
+*.swp
+
+# ignore secrets
+/.secrets/

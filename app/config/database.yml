@@ -1,0 +1,17 @@
+default: &default
+  adapter: postgresql
+  database: <%= ENV['POMPA_DB'] %>
+  username: <%= ENV['POMPA_DB_USERNAME'] %>
+  password: <%= File.read('/run/secrets/pompa_db_password') %>
+  host: <%= ENV['POMPA_DB_HOST'] %>
+  timeout: 5000
+  pool: 50
+
+production:
+  <<: *default
+
+development:
+  <<: *default
+
+test:
+  <<: *default

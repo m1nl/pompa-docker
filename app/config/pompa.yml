@@ -1,0 +1,66 @@
+redis_default: &redis_default
+  driver: hiredis
+  pool_size: 15
+  url: "redis://redis"
+  db: 0
+
+default: &default
+  log_level: "info"
+  code_length: 7
+  batch_size: 1000
+  url: /api
+  origins: ""
+  trust_uploads: true
+  trusted_proxies:
+    - "127.0.0.1"
+    - "::1"
+  interfaces:
+    admin: true
+    public: true
+    sidekiq_console: false
+  model_cache:
+    enable: true
+    expire: 300
+  response_cache:
+    enable: true
+    expire: 300
+  lock:
+    retry_delay: 0.2
+    retry_count: 50
+  worker:
+    queue_timeout: 30
+    refill_interval: 120
+    expiry_timeout: 300
+  mailer:
+    idle_timeout: 180
+    debug_email_content: false
+  campaign:
+    sync_interval: 20
+    victim_batch_size: 3
+    error_threshold: 6
+    respawn_interval: 300
+  victim:
+    email_timeout: 300
+    retry_threshold: 5
+    expose_header: "X-Victim-Code"
+  template:
+    base_url: "http://localhost:8081"
+  report:
+    cookie_name: "pompa"
+  redis:
+    <<: *redis_default
+
+production:
+  <<: *default
+  origins: ""
+  redis:
+    <<: *redis_default
+    db: 1
+    pool_size: 25
+
+development:
+  <<: *default
+  log_level: "debug"
+
+test:
+  <<: *default
