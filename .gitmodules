@@ -1,0 +1,8 @@
+[submodule "app/pompa-api"]
+	path = app/pompa-api
+	url = https://github.com/m1nl/pompa-api.git
+	branch = master
+[submodule "web/pompa"]
+	path = web/pompa
+	url = https://github.com/m1nl/pompa.git
+	branch = master
