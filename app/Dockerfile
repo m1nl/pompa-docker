@@ -13,6 +13,7 @@ COPY pompa-api/Gemfile.lock ./
 ENV RAILS_ENV production
 ENV RAILS_LOG_TO_STDOUT true
 
+RUN gem install bundler
 RUN bundle config --global frozen 1
 RUN bundle install --without development test
 
