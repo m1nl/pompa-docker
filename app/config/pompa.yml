@@ -9,6 +9,8 @@ default: &default
     admin: true
     public: true
     sidekiq_console: true
+  template:
+    base_url: "http://localhost:8081"
   redis:
     <<: *redis_default
 
