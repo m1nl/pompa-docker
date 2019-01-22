@@ -1,6 +1,6 @@
 # pompa
 
-Ultimate spear-phishing toolkit - sample docker setup (Linux-compatible)
+Fully-featured spear-phishing toolkit - sample docker setup (Linux-compatible)
 
 ## Prerequisites
 
