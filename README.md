@@ -31,6 +31,7 @@ Look for config files in the following directories:
 
 * `docker-compose build`
 * `docker-compose up`
+* open http://localhost:8082/ in a modern web browser
 
 ## Further Reading / Useful Links
 
