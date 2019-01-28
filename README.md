@@ -33,6 +33,11 @@ Look for config files in the following directories:
 * `docker-compose up`
 * open http://localhost:8082/ in a modern web browser
 
+## Upgrading submodules
+
+* `git submodule update --remote`
+* `docker-compose build`
+
 ## Further Reading / Useful Links
 
 * [pompa-api](https://github.com/m1nl/pompa-api)
