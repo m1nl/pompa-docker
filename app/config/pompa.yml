@@ -10,7 +10,7 @@ default: &default
     public: true
     sidekiq_console: true
   template:
-    base_url: "http://localhost:8081"
+    base_url: "<%= ENV['POMPA_BASE_URL'] || 'http://localhost:8081' %>"
   redis:
     <<: *redis_default
 
