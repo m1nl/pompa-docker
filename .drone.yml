@@ -7,8 +7,15 @@ clone:
 steps:
 - name: update_ci
   image: docker:git
+  environment:
+    POMPA_CI_DEPLOY_KEY:
+      from_secret: pompa_ci_deploy_key
   commands:
-  - git clone https://github.com/m1nl/pompa-ci.git
+  - mkdir -p ~/.ssh
+  - echo -ne "$POMPA_CI_DEPLOY_KEY" > ~/.ssh/id_rsa
+  - ssh-keyscan -H github.com > ~/.ssh/known_hosts
+  - chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
+  - git clone git@github.com:m1nl/pompa-ci.git
   - cd pompa-ci
   - git config user.email "drone@nalewajski.pl"
   - git config user.name "Drone CI"
