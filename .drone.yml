@@ -13,6 +13,7 @@ steps:
   - git config user.email "drone@nalewajski.pl"
   - git config user.name "Drone CI"
   - git config merge.ours.driver true
+  - git config merge.theirs.driver true
   - git remote add upstream https://github.com/m1nl/pompa-docker.git
   - git fetch upstream
   - git merge --squash --allow-unrelated-histories upstream/master
