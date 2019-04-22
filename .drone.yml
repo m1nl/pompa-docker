@@ -15,6 +15,9 @@ steps:
   - git config merge.ours.driver true
   - git remote add upstream https://github.com/m1nl/pompa-docker.git
   - git fetch upstream
-  - git merge --squash --allow-unrelated-histories --strategy=recursive --strategy-option=theirs upstream/master
+  - git checkout --theirs upstream/master -- web/pompa
+  - git checkout --theirs upstream/master -- app/pompa-api
   - git commit --allow-empty -m "merge with $DRONE_COMMIT ($DRONE_COMMIT_MESSAGE) by $DRONE_COMMIT_AUTHOR"
+  - git merge --squash --allow-unrelated-histories --strategy=recursive --strategy-option=theirs upstream/master
+  - git commit --amend
   - git push origin master
