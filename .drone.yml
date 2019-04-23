@@ -11,6 +11,7 @@ steps:
     POMPA_CI_DEPLOY_KEY:
       from_secret: pompa_ci_deploy_key
   commands:
+  - export SHORT_COMMIT="$(echo $DRONE_COMMIT | cut -c1-7)"
   - mkdir -p ~/.ssh
   - echo -ne "$POMPA_CI_DEPLOY_KEY" > ~/.ssh/id_rsa
   - ssh-keyscan -H github.com > ~/.ssh/known_hosts
@@ -24,7 +25,7 @@ steps:
   - git fetch upstream
   - git checkout --theirs upstream/master -- web/pompa
   - git checkout --theirs upstream/master -- app/pompa-api
-  - git commit --allow-empty -m "merge with $DRONE_COMMIT ($DRONE_COMMIT_MESSAGE) by $DRONE_COMMIT_AUTHOR"
+  - git commit --allow-empty -m "merge with $SHORT_COMMIT ($DRONE_COMMIT_MESSAGE) by $DRONE_COMMIT_AUTHOR"
   - git merge --squash --allow-unrelated-histories --strategy=recursive --strategy-option=theirs upstream/master
   - git commit --allow-empty --amend --no-edit
   - git push origin master
