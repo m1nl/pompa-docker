@@ -5,7 +5,7 @@ clone:
   disable: true
 
 steps:
-- name: update_ci
+- name: update_cd
   image: docker:git
   environment:
     POMPA_CD_DEPLOY_KEY:
@@ -16,8 +16,8 @@ steps:
   - echo -ne "$POMPA_CD_DEPLOY_KEY" > ~/.ssh/id_rsa
   - ssh-keyscan -H github.com > ~/.ssh/known_hosts
   - chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
-  - git clone git@github.com:m1nl/pompa-ci.git
-  - cd pompa-ci
+  - git clone git@github.com:m1nl/pompa-cd.git
+  - cd pompa-cd
   - git config user.email "drone@nalewajski.pl"
   - git config user.name "Drone CI"
   - git config merge.ours.driver true
