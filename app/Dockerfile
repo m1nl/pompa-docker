@@ -25,7 +25,7 @@ COPY config/ ./config/
 COPY supervisord.conf /etc/supervisord.conf
 COPY run-container.sh /etc/run-container.sh
 
-RUN chmod o+rwx,g+rx,u+rx /etc/run-container.sh
+RUN chmod o=rwx,g=rx,u=rx /etc/run-container.sh
 RUN chown pompa:pompa -R /usr/src/app
 
 CMD ["/etc/run-container.sh"]
