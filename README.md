@@ -2,6 +2,8 @@
 
 Fully-featured spear-phishing toolkit - sample docker setup (Linux-compatible)
 
+**NOTE:** Please read the [wiki](https://github.com/m1nl/pompa/wiki/Getting-Started) in [pompa](https://github.com/m1nl/pompa) repository for better docs.
+
 ## Prerequisites
 
 You will need the following things properly installed on your computer:
