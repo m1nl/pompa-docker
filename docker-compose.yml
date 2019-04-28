@@ -7,6 +7,8 @@ services:
       - db
     volumes:
       - "pompa_public:/usr/src/app/public"
+      - "pompa_storage:/usr/src/app/storage"
+      - "shared_tmp:/tmp"
     environment: &environment
       - POMPA_DB=pompa
       - POMPA_DB_USERNAME=pompa
@@ -18,6 +20,8 @@ services:
       - database_key
   web:
     build: "./web"
+    volumes:
+      - "shared_tmp:/tmp"
     ports:
       - "8081:8081"
       - "8082:8082"
@@ -38,9 +42,11 @@ services:
       - pompa_db_password
       - postgres_db_password
 volumes:
+  pompa_public:
+  pompa_storage:
+  shared_tmp:
   redis_data:
   postgres_data:
-  pompa_public:
 secrets:
   pompa_db_password:
     file: ./.secrets/pompa_db_password
