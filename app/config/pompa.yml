@@ -5,6 +5,10 @@ redis_default: &redis_default
   db: 0
 
 default: &default
+  trusted_proxies:
+    - "192.168.0.0/24"
+    - "172.16.0.0/12"
+    - "10.0.0.0/8"
   endpoints:
     admin: true
     public: true
