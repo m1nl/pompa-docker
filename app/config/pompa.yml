@@ -6,9 +6,7 @@ redis_default: &redis_default
 
 default: &default
   trusted_proxies:
-    - "192.168.0.0/16"
-    - "172.16.0.0/12"
-    - "10.0.0.0/8"
+    - "web"
   endpoints:
     admin: true
     public: true
