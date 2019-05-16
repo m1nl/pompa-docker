@@ -1,0 +1,43 @@
+# vi:syntax=sh
+
+docker network create --driver overlay traefik-public
+
+docker service create \
+    --mode global \
+    --endpoint-mode dnsrr \
+    --name traefik \
+    --constraint=node.labels.traefik-public.traefik-public-certificates==true \
+    --publish target=80,published=80,mode=host \
+    --publish target=443,published=443,mode=host \
+    --mount type=volume,source=traefik-public-certificates,target=/certificates \
+    --mount type=bind,source=<changeme>,target=/storage \ # bind mount for traefik htpasswd configuration
+    --mount type=bind,source=/var/run/docker.sock,target=/var/run/docker.sock \ # this makes me sad as an IT security guy...
+    --network traefik-public \
+    --label "traefik.frontend.rule=Host:<changeme>" \ # admin host for traefik
+    --label "traefik.enable=true" \
+    --label "traefik.port=8080" \
+    --label "traefik.tags=traefik-public" \
+    --label "traefik.docker.network=traefik-public" \
+    --label "traefik.redirectorservice.frontend.entryPoints=http" \
+    --label "traefik.redirectorservice.frontend.redirect.entryPoint=https" \
+    --label "traefik.webservice.frontend.entryPoints=https" \
+    --label "traefik.frontend.auth.basic.usersFile=/storage/htpasswd-traefik" \ # htpasswd for traefik admin authentication
+    traefik:v1.7 \
+    --docker \
+    --docker.swarmmode \
+    --docker.watch \
+    --docker.exposedbydefault=false \
+    --constraints=tag==traefik-public \
+    --entrypoints='Name:http Address::80 Redirect.EntryPoint:https' \
+    --entrypoints='Name:https Address::443 Compress:true TLS' \
+    --defaultentrypoints=http,https \
+    --acme \
+    --acme.email=<changeme> \ # email for Let's Encrypt ACME
+    --acme.storage=/certificates/acme.json \
+    --acme.entryPoint=https \
+    --acme.httpChallenge.entryPoint=http\
+    --acme.onhostrule=true \
+    --acme.acmelogging=true \
+    --logLevel=INFO \
+    --accessLog \
+    --api

@@ -1,0 +1,91 @@
+# vi:syntax=yaml
+
+version: "3.7"
+services:
+  app:
+    image: "<your private registry>/pompa-app"
+    depends_on:
+      - redis
+      - db
+    volumes:
+      - "pompa_public:/usr/src/app/public"
+      - "pompa_storage:/usr/src/app/storage"
+      - "shared_tmp:/tmp"
+    environment: &environment
+      - POMPA_DB=pompa
+      - POMPA_DB_USERNAME=pompa
+      - POMPA_DB_HOST=db
+      - POMPA_BASE_URL=https://<change me> # instance-default base URL
+      - POSTGRES_PASSWORD_FILE=/run/secrets/postgres_db_password
+    networks:
+      - internal
+    secrets:
+      - pompa_db_password
+      - secret_key_base
+      - database_key
+  web:
+    image: "<your private registry>/pompa-web"
+    volumes:
+      - "shared_tmp:/tmp"
+    deploy:
+      labels:
+        traefik.enable: "true"
+        traefik.admin.backend: "pompa-admin"
+        traefik.admin.frontend.rule: "Host:<change me>" # pompa admin host
+        traefik.admin.port: "8082"
+        traefik.admin.frontend.auth.basic.usersFile: "/storage/htpasswd-<change me>" # htpasswd file for pompa admin panel authentication
+
+        # BEGIN: sample public API configuration for phishing sites
+        traefik.public.backend: "phishing-<change me>" # backend name
+        traefik.public.frontend.rule: "Host:<change me>" # host configuration (i.e. myphishingsite.example.com>
+        traefik.public.port: "8081"
+        # END
+
+        traefik.tags: "traefik-public"
+        traefik.docker.network: "traefik-public"
+    networks:
+      - traefik-public
+      - internal
+    depends_on:
+      - app
+  redis:
+    image: "<your private registry>/pompa-redis"
+    volumes:
+      - "redis_data:/data"
+    networks:
+      - internal
+  db:
+    image: "<your private registry>/pompa-db"
+    volumes:
+      - "postgres_data:/var/lib/postgresql/data"
+    environment: *environment
+    networks:
+      - internal
+    secrets:
+      - pompa_db_password
+      - postgres_db_password
+  smtp:
+    image: "namshi/smtp"
+    environment:
+      - MAILNAME=<change me> # domain for SMTP server (rev-ip should resolve to this domain to make other MX'es happy)
+    networks:
+      - internal
+volumes:
+  pompa_public:
+  pompa_storage:
+  shared_tmp:
+  redis_data:
+  postgres_data:
+secrets:
+  pompa_db_password:
+    file: ./.secrets/pompa_db_password
+  postgres_db_password:
+    file: ./.secrets/postgres_db_password
+  secret_key_base:
+    file: ./.secrets/secret_key_base
+  database_key:
+    file: ./.secrets/database_key
+networks:
+  traefik-public:
+    external: true
+  internal:
