@@ -1,6 +1,6 @@
 FROM ruby:2-alpine
 
-RUN apk add --update --no-cache build-base libxml2-dev libxslt-dev tzdata postgresql-dev supervisor su-exec
+RUN apk add --update --no-cache build-base libxml2-dev libxslt-dev libsodium-dev postgresql-dev supervisor su-exec tzdata
 RUN addgroup pompa && adduser -h /usr/src/app -H -D -S -G pompa pompa
 
 RUN mkdir -p /usr/src/app
