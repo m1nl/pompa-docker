@@ -2,7 +2,6 @@ redis_default: &redis_default
   driver: hiredis
   pool_size: 15
   url: "redis://redis"
-  db: 0
 
 default: &default
   trusted_proxies:
@@ -20,7 +19,6 @@ production:
   <<: *default
   redis:
     <<: *redis_default
-    db: 1
     pool_size: 25
 
 development:
