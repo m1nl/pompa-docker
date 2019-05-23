@@ -4,8 +4,8 @@ default: &default
   username: <%= ENV['POMPA_DB_USERNAME'] %>
   password: <%= File.read('/run/secrets/pompa_db_password') %>
   host: <%= ENV['POMPA_DB_HOST'] %>
+  pool: <%= ENV.fetch("RAILS_MAX_THREADS") { 5 } %>
   timeout: 5000
-  pool: 50
 
 production:
   <<: *default

@@ -1,6 +1,5 @@
 redis_default: &redis_default
   driver: hiredis
-  pool_size: 15
   url: "redis://redis"
 
 default: &default
@@ -11,7 +10,7 @@ default: &default
     public: true
     sidekiq_console: true
   template:
-    base_url: "<%= ENV['POMPA_BASE_URL'] || 'http://localhost:8081' %>"
+    base_url: "<%= ENV.fetch('POMPA_BASE_URL') { 'http://localhost:8081' } %>"
   redis:
     <<: *redis_default
 
@@ -19,7 +18,6 @@ production:
   <<: *default
   redis:
     <<: *redis_default
-    pool_size: 25
 
 development:
   <<: *default
