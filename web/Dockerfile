@@ -1,4 +1,4 @@
-FROM node:carbon AS pompa-build
+FROM node:dubnium AS pompa-build
 
 WORKDIR /usr/src/app
 ENV PATH=/usr/src/app/bin:$PATH
