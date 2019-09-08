@@ -22,6 +22,8 @@ RUN bundle install --without development test
 COPY pompa-api/ ./
 COPY config/ ./config/
 
+RUN ./genrevision.sh
+
 COPY supervisord.conf /etc/supervisord.conf
 COPY run-container.sh /etc/run-container.sh
 
