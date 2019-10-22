@@ -11,6 +11,7 @@ SUPERVISORCTLOPTS="-u dummy -p dummy"
 SUPERVISORDOPTS="-c /etc/supervisord.conf"
 
 $SUEXEC pompa bundle exec rake db:migrate || exit 1
+$SUEXEC pompa bundle exec rake pompa:clear_cache || exit 1
 
 reload() {
   SIDEKIQ_PID="`$SUPERVISORCTL $SUPERVISORCTLOPTS pid sidekiq 2> /dev/null`"
