@@ -1,14 +1,15 @@
-/* eslint-env node */
+'use strict';
 
 module.exports = function(environment) {
-  var ENV = {
+  let ENV = {
     modulePrefix: 'pompa',
-    environment: environment,
+    environment,
+    rootURL: '/',
     locationType: 'auto',
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
-        // e.g. 'with-controller': true
+        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -23,24 +24,21 @@ module.exports = function(environment) {
   };
 
   if (environment === 'development') {
-    ENV.rootURL = "/";
-
     ENV.APP.apiHost = ""
     ENV.APP.apiNamespace = "api"
+    ENV.APP.campaignChallenge = "yes";
   }
 
   if (environment === 'staging') {
-    ENV.rootURL = "/";
-
     ENV.APP.apiHost = ""
     ENV.APP.apiNamespace = "api"
+    ENV.APP.campaignChallenge = "yes";
   }
 
   if (environment === 'production') {
-    ENV.rootURL = "/";
-
     ENV.APP.apiHost = ""
     ENV.APP.apiNamespace = "api"
+    ENV.APP.campaignChallenge = "yes";
   }
 
   if (environment === 'test') {
@@ -52,6 +50,7 @@ module.exports = function(environment) {
     ENV.APP.LOG_VIEW_LOOKUPS = false;
 
     ENV.APP.rootElement = '#ember-testing';
+    ENV.APP.autoboot = false;
   }
 
   return ENV;
