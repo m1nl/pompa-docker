@@ -26,6 +26,6 @@ steps:
   - git checkout --theirs upstream/master -- web/pompa
   - git checkout --theirs upstream/master -- app/pompa-api
   - git commit --allow-empty -m "$DRONE_COMMIT_MESSAGE"
-  - git merge --squash --allow-unrelated-histories --strategy=recursive --strategy-option=theirs upstream/master
+  - git merge --squash --allow-unrelated-histories --strategy=recursive --strategy-option=ours upstream/master
   - git commit --allow-empty --amend --no-edit
   - git push origin master
