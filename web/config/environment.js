@@ -25,19 +25,19 @@ module.exports = function(environment) {
 
   if (environment === 'development') {
     ENV.APP.apiHost = ""
-    ENV.APP.apiNamespace = "api"
+    ENV.APP.apiNamespace = "/api"
     ENV.APP.campaignChallenge = "yes";
   }
 
   if (environment === 'staging') {
     ENV.APP.apiHost = ""
-    ENV.APP.apiNamespace = "api"
+    ENV.APP.apiNamespace = "/api"
     ENV.APP.campaignChallenge = "yes";
   }
 
   if (environment === 'production') {
     ENV.APP.apiHost = ""
-    ENV.APP.apiNamespace = "api"
+    ENV.APP.apiNamespace = "/api"
     ENV.APP.campaignChallenge = "yes";
   }
 
