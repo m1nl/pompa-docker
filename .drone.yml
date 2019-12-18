@@ -16,16 +16,21 @@ steps:
   - echo -ne "$POMPA_CD_DEPLOY_KEY" > ~/.ssh/id_rsa
   - ssh-keyscan -H github.com > ~/.ssh/known_hosts
   - chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
-  - git clone git@github.com:m1nl/pompa-cd.git
+  - mkdir pompa-cd
   - cd pompa-cd
+  - git init
   - git config user.email "drone@nalewajski.pl"
   - git config user.name "Drone CI"
-  - git config merge.ours.driver true
-  - git remote add upstream https://github.com/m1nl/pompa-docker.git
+  - git remote add origin git@github.com:m1nl/pompa-cd.git
+  - git remote add upstream git@github.com:m1nl/pompa-docker.git
+  - git fetch origin
   - git fetch upstream
-  - git checkout --theirs upstream/master -- web/pompa
-  - git checkout --theirs upstream/master -- app/pompa-api
+  - git checkout -b master --track origin/master
+  - git checkout -b upstream --track upstream/master
+  - git checkout master
+  - git checkout --theirs upstream -- web/pompa
+  - git checkout --theirs upstream -- app/pompa-api
   - git commit --allow-empty -m "$DRONE_COMMIT_MESSAGE"
-  - git merge --squash --allow-unrelated-histories --strategy=recursive --strategy-option=theirs upstream/master
+  - git merge --squash --strategy=recursive --strategy-option=theirs upstream
   - git commit --allow-empty --amend --no-edit
   - git push origin master
