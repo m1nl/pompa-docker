@@ -22,7 +22,7 @@ steps:
   - git config user.email "drone@nalewajski.pl"
   - git config user.name "Drone CI"
   - git remote add origin git@github.com:m1nl/pompa-cd.git
-  - git remote add upstream git@github.com:m1nl/pompa-docker.git
+  - git remote add upstream https://github.com/m1nl/pompa-docker.git
   - git fetch origin
   - git fetch upstream
   - git checkout -b master --track origin/master
