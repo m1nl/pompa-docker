@@ -21,6 +21,7 @@ steps:
   - git init
   - git config user.email "drone@nalewajski.pl"
   - git config user.name "Drone CI"
+  - git config merge.ours.driver true
   - git remote add origin git@github.com:m1nl/pompa-cd.git
   - git remote add upstream https://github.com/m1nl/pompa-docker.git
   - git fetch origin
