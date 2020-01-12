@@ -46,7 +46,7 @@ $SUPERVISORD $SUPERVISORDOPTS
 sleep 1 && kill -0 `cat $SUPERVISORDPID`
 
 for i in $COMPONENTS ; do
-  echo "[run-container] $i: starting"
+  echo "[docker-entrypoint] $i: starting"
   $SUPERVISORCTL $SUPERVISORCTLOPTS start $i &
   sleep 1
 done
@@ -58,7 +58,7 @@ while (kill -0 `cat $SUPERVISORDPID 2> /dev/null` > /dev/null 2>&1) ; do
 
   NUM_FATAL=`( $SUPERVISORCTL $SUPERVISORCTLOPTS status | grep -c FATAL ) || true`
   if [ $NUM_FATAL -gt 0 ] ; then
-    echo "[run-container] at least one required component stuck in FATAL state - exiting."
+    echo "[docker-entrypoint] at least one required component stuck in FATAL state - exiting."
     EXITCODE=1
     shutdown
   fi
