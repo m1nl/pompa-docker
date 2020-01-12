@@ -38,7 +38,7 @@ COPY config/ ./config/
 
 RUN ./genrevision.sh
 
-RUN for i in public private log tmp ; do chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME/$i ; done
+RUN chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME
 
 COPY supervisord.conf /etc/supervisord.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
