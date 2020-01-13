@@ -1,5 +1,13 @@
 #!/bin/sh
 
+if [ $# -gt 0 ] ; then
+  COMMAND="$1"
+  shift
+
+  exec "$COMMAND" "$@"
+  exit $?
+fi
+
 set -e
 
 ln -s /proc/$$/fd/1 /dev/docker-stdout
@@ -7,7 +15,7 @@ ln -s /proc/$$/fd/2 /dev/docker-stderr
 
 SUPERVISORCTL="/usr/bin/supervisorctl"
 SUPERVISORD="/usr/bin/supervisord"
-SUEXEC="/sbin/su-exec"
+RAKE="/usr/local/wrappers/rake"
 
 SUPERVISORCTLOPTS="-u dummy -p dummy"
 SUPERVISORDOPTS="-c /etc/supervisord.conf"
@@ -31,12 +39,12 @@ shutdown() {
 }
 
 if [ "$MANAGE_DB" == "true" ] ; then
-  $SUEXEC $POMPA_USER:$POMPA_GROUP bundle exec rake db:migrate
+  $RAKE db:migrate
 fi
 
-$SUEXEC $POMPA_USER:$POMPA_GROUP bundle exec rake db:abort_if_pending_migrations
-$SUEXEC $POMPA_USER:$POMPA_GROUP bundle exec rake pompa:clear_cache
-$SUEXEC $POMPA_USER:$POMPA_GROUP rm -rf tmp/cache/* > /dev/null 2>&1
+$RAKE db:abort_if_pending_migrations
+$RAKE pompa:clear_cache
+rm -rf tmp/cache/* > /dev/null 2>&1
 
 trap reload 1
 trap shutdown 2 15

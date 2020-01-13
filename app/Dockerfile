@@ -4,15 +4,28 @@ ENV POMPA_USER pompa
 ENV POMPA_GROUP pompa
 ENV POMPA_HOME /usr/src/app
 
-RUN apk add --update --no-cache build-base libxml2-dev libxslt-dev libsodium-dev postgresql-dev supervisor su-exec tzdata
-RUN addgroup $POMPA_GROUP && adduser -h $POMPA_HOME -H -D -S -G $POMPA_GROUP $POMPA_USER
+RUN apk add --update --no-cache \
+  build-base \
+  libxml2-dev \
+  libxslt-dev \
+  libsodium-dev \
+  postgresql-dev \
+  supervisor \
+  su-exec \
+  tzdata
 
-RUN mkdir -p $POMPA_HOME
+RUN set -eux; \
+  addgroup -S -g 500 $POMPA_GROUP; \
+  adduser -S -h $POMPA_HOME -H -D -G $POMPA_GROUP -u 500 $POMPA_USER; \
+  mkdir -p $POMPA_HOME
 
 WORKDIR $POMPA_HOME
 
 COPY pompa-api/Gemfile ./
 COPY pompa-api/Gemfile.lock ./
+
+ENV BUNDLE_JOBS=4
+ENV BUNDLE_RETRY=3
 
 ENV RAILS_ENV production
 ENV RAILS_LOG_TO_STDOUT true
@@ -24,8 +37,10 @@ RUN bundle config --global frozen 1
 RUN bundle config --global set without 'development test'
 RUN bundle install
 
-RUN apk del --no-cache build-base && \
-  rm -rf /usr/share/info/* && \
+RUN apk del --no-cache \
+  build-base
+
+RUN rm -rf /usr/share/info/* && \
   rm -rf /usr/share/man/* && \
   rm -rf /usr/share/doc/* && \
   rm -rf /var/tmp/* && \
@@ -39,6 +54,13 @@ COPY config/ ./config/
 RUN ./genrevision.sh
 
 RUN chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME
+
+RUN mkdir -p /usr/local/wrappers
+COPY wrapper.sh /usr/local/wrappers/.wrapper.sh
+RUN for i in /usr/local/bundle/bin/* ; \
+    do ln -s /usr/local/wrappers/.wrapper.sh /usr/local/wrappers/`basename $i` ; \
+  done
+ENV PATH="/usr/local/wrappers:$PATH"
 
 COPY supervisord.conf /etc/supervisord.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
