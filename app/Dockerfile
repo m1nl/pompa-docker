@@ -64,5 +64,7 @@ ENV PATH="/usr/local/wrappers:$PATH"
 
 COPY supervisord.conf /etc/supervisord.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+COPY docker-readiness.sh /usr/local/bin/docker-readiness.sh
+COPY docker-liveness.sh /usr/local/bin/docker-liveness.sh
 
 ENTRYPOINT ["docker-entrypoint.sh"]
