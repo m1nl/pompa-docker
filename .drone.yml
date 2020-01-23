@@ -29,7 +29,7 @@ steps:
   - git checkout -b master --track origin/master
   - git checkout -b upstream --track upstream/master
   - git checkout master
-  - git checkout --theirs upstream -- web/pompa
+  - git checkout --theirs upstream -- facade/pompa
   - git checkout --theirs upstream -- app/pompa-api
   - git commit --allow-empty -m "$DRONE_COMMIT_MESSAGE"
   - git merge --squash --strategy=recursive --strategy-option=theirs upstream
