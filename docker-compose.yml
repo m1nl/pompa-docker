@@ -18,8 +18,8 @@ services:
       - pompa_db_password
       - secret_key_base
       - database_key
-  web:
-    build: "./web"
+  facade:
+    build: "./facade"
     volumes:
       - "shared_tmp:/tmp"
     ports:

@@ -1,0 +1,194 @@
+user nginx;
+
+worker_processes auto;
+
+error_log stderr warn;
+pid /var/run/nginx.pid;
+
+events {
+    worker_connections 1024;
+    use epoll;
+}
+
+http {
+    include /etc/nginx/mime.types;
+    default_type application/octet-stream;
+
+    log_format main '$remote_addr - $remote_user [$time_local] "$request" '
+                    '$status $body_bytes_sent "$http_referer" '
+                    '"$http_user_agent" "$http_x_forwarded_for"';
+
+    access_log stdout main;
+
+    sendfile on;
+    tcp_nopush on;
+    tcp_nodelay on;
+    keepalive_timeout 65;
+    types_hash_max_size 2048;
+    server_tokens off;
+
+    gzip on;
+    gzip_min_length 10240;
+    gzip_comp_level 1;
+    gzip_vary on;
+    gzip_disable "msie6";
+    gzip_proxied expired no-cache no-store private auth;
+    gzip_types application/x-javascript text/css application/javascript text/javascript text/plain text/xml application/json application/vnd.ms-fontobject application/x-font-opentype application/x-font-truetype application/x-font-ttf application/xml font/eot font/opentype font/otf image/svg+xml image/vnd.microsoft.icon;
+
+    reset_timedout_connection on;
+
+    real_ip_header X-Real-IP;
+    real_ip_recursive on;
+    set_real_ip_from 192.168.0.0/16;
+    set_real_ip_from 172.16.0.0/12;
+    set_real_ip_from 10.0.0.0/8;
+
+    map $http_x_forwarded_proto $proxied_scheme {
+        default $scheme;
+        https https;
+    }
+
+    {{ if eq .Env.POMPA_ADMIN_ENABLE "true" }}
+
+    upstream pompa-admin-api {
+        server {{ .Env.POMPA_ADMIN_API }};
+    }
+
+    server {
+        listen 8081;
+
+        server_name {{ .Env.POMPA_ADMIN_HOST }};
+        root /var/www/pompa;
+
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+
+        add_header X-Frame-Options SAMEORIGIN;
+        add_header Content-Security-Policy "default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; object-src 'none'";
+
+        location /__send_file_accel {
+            internal;
+            alias /tmp;
+        }
+
+        location / {
+            try_files $uri /index.html;
+
+            location {{ .Env.POMPA_ADMIN_API_PREFIX }} {
+                client_max_body_size 64M;
+
+                proxy_pass_request_headers on;
+
+                proxy_set_header Host $http_host;
+
+                proxy_set_header X-Forwarded-Server $host;
+                proxy_set_header X-Forwarded-By $server_addr:$server_port;
+                proxy_set_header X-Forwarded-Proto $proxied_scheme;
+                proxy_set_header X-Forwarded-Port $server_port;
+
+                proxy_set_header X-Forwarded-For $remote_addr;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header CLIENT_IP $remote_addr;
+
+                proxy_set_header Accept-Encoding "";
+
+                proxy_hide_header X-Content-Type-Options;
+                proxy_hide_header X-XSS-Protection;
+
+                proxy_hide_header X-Frame-Options;
+                proxy_hide_header Content-Security-Policy;
+
+                proxy_buffer_size 4k;
+                proxy_buffers 4 32k;
+                proxy_busy_buffers_size 64k;
+
+                proxy_pass http://pompa-admin-api;
+
+                location {{ .Env.POMPA_ADMIN_API_PREFIX }}/workers/files {
+                    proxy_set_header X-Sendfile-Type X-Accel-Redirect;
+                    proxy_set_header X-Accel-Mapping "/tmp=/__send_file_accel";
+
+                    proxy_pass http://pompa-admin-api;
+                }
+            }
+        }
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 403 /403.html;
+        location = /403.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
+
+    {{ end }}
+
+    {{ if eq .Env.POMPA_PUBLIC_ENABLE "true" }}
+
+    upstream pompa-public-api {
+        server {{ .Env.POMPA_PUBLIC_API }};
+    }
+
+    server {
+        listen 8082 default_server;
+        server_name _;
+        root /var/www/default;
+
+        add_header X-Content-Type-Options nosniff;
+        add_header X-XSS-Protection "1; mode=block";
+
+        location / {
+            rewrite /(.*) {{ .Env.POMPA_PUBLIC_API_PREFIX }}/public/$1 break;
+
+            proxy_pass_request_headers on;
+            proxy_intercept_errors on;
+
+            proxy_set_header Host $http_host;
+
+            proxy_set_header X-Forwarded-Server $host;
+            proxy_set_header X-Forwarded-By $server_addr:$server_port;
+            proxy_set_header X-Forwarded-Proto $proxied_scheme;
+            proxy_set_header X-Forwarded-Port $server_port;
+
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header CLIENT_IP $remote_addr;
+
+            proxy_set_header Accept-Encoding "";
+
+            proxy_hide_header X-Content-Type-Options;
+            proxy_hide_header X-XSS-Protection;
+
+            proxy_buffer_size 4k;
+            proxy_buffers 4 32k;
+            proxy_busy_buffers_size 64k;
+
+            proxy_pass http://pompa-public-api;
+        }
+
+        location = /favicon.ico {
+            return 204;
+            access_log off;
+            log_not_found  off;
+        }
+
+        error_page 404 /404.html;
+        location = /404.html {
+        }
+
+        error_page 403 /403.html;
+        location = /403.html {
+        }
+
+        error_page 500 502 503 504 /50x.html;
+        location = /50x.html {
+        }
+    }
+
+    {{ end }}
+}
