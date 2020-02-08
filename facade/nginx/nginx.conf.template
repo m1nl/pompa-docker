@@ -58,7 +58,7 @@ http {
         listen 8081;
 
         server_name {{ .Env.POMPA_ADMIN_HOST }};
-        root /var/www/pompa;
+        root /var/www/pompa-admin;
 
         add_header X-Content-Type-Options nosniff;
         add_header X-XSS-Protection "1; mode=block";
@@ -115,14 +115,20 @@ http {
 
         error_page 404 /404.html;
         location = /404.html {
+            root /var/www/error-pages;
+            internal;
         }
 
         error_page 403 /403.html;
         location = /403.html {
+            root /var/www/error-pages;
+            internal;
         }
 
         error_page 500 502 503 504 /50x.html;
         location = /50x.html {
+            root /var/www/error-pages;
+            internal;
         }
     }
 
@@ -137,7 +143,7 @@ http {
     server {
         listen 8082 default_server;
         server_name _;
-        root /var/www/default;
+        root /var/www/pompa-public;
 
         add_header X-Content-Type-Options nosniff;
         add_header X-XSS-Protection "1; mode=block";
@@ -179,14 +185,20 @@ http {
 
         error_page 404 /404.html;
         location = /404.html {
+            root /var/www/error-pages;
+            internal;
         }
 
         error_page 403 /403.html;
         location = /403.html {
+            root /var/www/error-pages;
+            internal;
         }
 
         error_page 500 502 503 504 /50x.html;
         location = /50x.html {
+            root /var/www/error-pages;
+            internal;
         }
     }
 

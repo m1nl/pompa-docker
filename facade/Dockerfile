@@ -19,10 +19,14 @@ FROM nginx:mainline-alpine
 RUN apk add --update --no-cache \
   gomplate
 
-COPY --from=pompa-build /usr/src/app/dist/ /var/www/pompa/
+COPY --from=pompa-build /usr/src/app/dist/ /var/www/pompa-admin/
 
-RUN rm -rf /var/www/default/*
-COPY public_root/ /var/www/default/
+RUN rm -rf /var/www/default
+
+COPY error-pages/ /var/www/error-pages/
+
+COPY pompa-admin/ /var/www/pompa-admin/
+COPY pompa-public/ /var/www/pompa-public/
 
 COPY nginx/ /etc/nginx/
 
