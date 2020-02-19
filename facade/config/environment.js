@@ -9,7 +9,7 @@ module.exports = function(environment) {
     EmberENV: {
       FEATURES: {
         // Here you can enable experimental features on an ember canary build
-        // e.g. EMBER_NATIVE_DECORATOR_SUPPORT: true
+        // e.g. 'with-controller': true
       },
       EXTEND_PROTOTYPES: {
         // Prevent Ember Data from overriding Date.parse.
@@ -18,27 +18,27 @@ module.exports = function(environment) {
     },
 
     APP: {
-      // Here you can pass flags/options to your application instance
-      // when it is created
+      tokenRefreshMargin: 60, // in seconds
+      enforceAuthentication: false,
     },
   };
 
   if (environment === 'development') {
     ENV.APP.apiHost = ""
-    ENV.APP.apiNamespace = "api"
-    ENV.APP.campaignChallenge = "yes";
+    ENV.APP.apiNamespace = "/api"
+    ENV.APP.campaignChallenge = "yes"
   }
 
   if (environment === 'staging') {
     ENV.APP.apiHost = ""
-    ENV.APP.apiNamespace = "api"
-    ENV.APP.campaignChallenge = "yes";
+    ENV.APP.apiNamespace = "/api"
+    ENV.APP.campaignChallenge = "yes"
   }
 
   if (environment === 'production') {
     ENV.APP.apiHost = ""
-    ENV.APP.apiNamespace = "api"
-    ENV.APP.campaignChallenge = "yes";
+    ENV.APP.apiNamespace = "/api"
+    ENV.APP.campaignChallenge = "yes"
   }
 
   if (environment === 'test') {
