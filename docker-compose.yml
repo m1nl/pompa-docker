@@ -6,9 +6,8 @@ services:
       - redis
       - db
     volumes:
-      - "pompa_public:/usr/src/app/public"
-      - "pompa_storage:/usr/src/app/storage"
-      - "shared_tmp:/tmp"
+      - "pompa_storage:/app/storage"
+      - "pompa_shared_tmp:/app/tmp/shared"
     environment: &environment
       - POMPA_DB=pompa
       - POMPA_DB_USERNAME=pompa
@@ -21,7 +20,7 @@ services:
   facade:
     build: "./facade"
     volumes:
-      - "shared_tmp:/tmp"
+      - "pompa_shared_tmp:/var/www/pompa-tmp"
     ports:
       - "8081:8081"
       - "8082:8082"
@@ -42,9 +41,8 @@ services:
       - pompa_db_password
       - postgres_db_password
 volumes:
-  pompa_public:
   pompa_storage:
-  shared_tmp:
+  pompa_shared_tmp:
   redis_data:
   postgres_data:
 secrets:

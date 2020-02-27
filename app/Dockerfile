@@ -2,7 +2,7 @@ FROM ruby:2.6-alpine
 
 ENV POMPA_USER pompa
 ENV POMPA_GROUP pompa
-ENV POMPA_HOME /usr/src/app
+ENV POMPA_HOME /app
 
 RUN apk add --update --no-cache \
   build-base \
@@ -33,9 +33,10 @@ ENV RAILS_LOG_TO_STDOUT true
 RUN gem update --system
 RUN gem install bundler
 
-RUN bundle config --global frozen 1
-RUN bundle config --global set without 'development test'
-RUN bundle install
+RUN set -eux; \
+  bundle config --global frozen 1; \
+  bundle config --global set without 'development test'; \
+  bundle install
 
 RUN apk del --no-cache \
   build-base
@@ -53,12 +54,21 @@ COPY config/ ./config/
 
 RUN ./genrevision.sh
 
-RUN chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME
+RUN set -eux; \
+  mkdir -p $POMPA_HOME/tmp/shared; \
+  chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME
+
+ENV SHARED_TMPDIR=$POMPA_HOME/tmp/shared
+
+VOLUME /app/storage
+VOLUME /app/tmp/shared
 
 RUN mkdir -p /usr/local/wrappers
 COPY wrapper.sh /usr/local/wrappers/.wrapper.sh
-RUN for i in /usr/local/bundle/bin/* ; \
-    do ln -s /usr/local/wrappers/.wrapper.sh /usr/local/wrappers/`basename $i` ; \
+
+RUN set -eux; \
+  for i in /usr/local/bundle/bin/*; \
+    do ln -s /usr/local/wrappers/.wrapper.sh /usr/local/wrappers/`basename $i`; \
   done
 ENV PATH="/usr/local/wrappers:$PATH"
 

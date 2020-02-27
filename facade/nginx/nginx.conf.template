@@ -68,7 +68,7 @@ http {
 
         location /__send_file_accel {
             internal;
-            alias /tmp;
+            alias /var/www/pompa-tmp;
         }
 
         location / {
@@ -106,7 +106,7 @@ http {
 
                 location {{ .Env.POMPA_ADMIN_API_PREFIX }}/workers/files {
                     proxy_set_header X-Sendfile-Type X-Accel-Redirect;
-                    proxy_set_header X-Accel-Mapping "/tmp=/__send_file_accel";
+                    proxy_set_header X-Accel-Mapping "{{ .Env.POMPA_SHARED_TMPDIR_MAPPING }}=/__send_file_accel";
 
                     proxy_pass http://pompa-admin-api;
                 }
