@@ -46,4 +46,4 @@ VOLUME /etc/nginx/private
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 
-CMD ["/usr/local/bin/docker-entrypoint.sh"]
+ENTRYPOINT ["docker-entrypoint.sh"]

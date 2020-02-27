@@ -66,10 +66,14 @@ http {
         add_header X-Frame-Options SAMEORIGIN;
         add_header Content-Security-Policy "default-src 'self'; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; font-src 'self' https://fonts.gstatic.com data:; img-src 'self' data:; object-src 'none'";
 
+        {{ if eq .Env.POMPA_SENDFILE_ENABLE "true" }}
+
         location /__send_file_accel {
             internal;
             alias /var/www/pompa-tmp;
         }
+
+        {{ end }}
 
         location / {
             try_files $uri /index.html;
@@ -104,12 +108,16 @@ http {
 
                 proxy_pass http://pompa-admin-api;
 
+                {{ if eq .Env.POMPA_SENDFILE_ENABLE "true" }}
+
                 location {{ .Env.POMPA_ADMIN_API_PREFIX }}/workers/files {
                     proxy_set_header X-Sendfile-Type X-Accel-Redirect;
-                    proxy_set_header X-Accel-Mapping "{{ .Env.POMPA_SHARED_TMPDIR_MAPPING }}=/__send_file_accel";
+                    proxy_set_header X-Accel-Mapping "{{ .Env.POMPA_SENDFILE_MAPPING }}=/__send_file_accel";
 
                     proxy_pass http://pompa-admin-api;
                 }
+
+                {{ end }}
             }
         }
 
