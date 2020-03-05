@@ -2,6 +2,9 @@
 
 set -e
 
+ln -s /proc/$$/fd/1 /dev/docker-stdout
+ln -s /proc/$$/fd/2 /dev/docker-stderr
+
 GOMPLATE="/usr/bin/gomplate"
 NGINX="/usr/sbin/nginx"
 

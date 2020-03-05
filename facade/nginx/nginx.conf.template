@@ -2,7 +2,7 @@ user nginx;
 
 worker_processes auto;
 
-error_log stderr warn;
+error_log /dev/docker-stderr warn;
 pid /var/run/nginx.pid;
 
 events {
@@ -18,7 +18,7 @@ http {
                     '$status $body_bytes_sent "$http_referer" '
                     '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log stdout main;
+    access_log /dev/docker-stdout main;
 
     sendfile on;
     tcp_nopush on;
