@@ -30,8 +30,9 @@ ENV BUNDLE_RETRY=3
 ENV RAILS_ENV production
 ENV RAILS_LOG_TO_STDOUT true
 
-RUN gem update --system
-RUN gem install bundler
+RUN set -eux; \
+  gem update --system; \
+  gem install bundler rake
 
 RUN set -eux; \
   bundle config --global frozen 1; \
