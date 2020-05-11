@@ -4,15 +4,18 @@ ENV POMPA_USER pompa
 ENV POMPA_GROUP pompa
 ENV POMPA_HOME /app
 
-RUN apk add --update --no-cache \
-  build-base \
-  libxml2-dev \
-  libxslt-dev \
-  libsodium-dev \
-  postgresql-dev \
-  supervisor \
-  su-exec \
-  tzdata
+RUN set -eux; \
+  apk add --update --no-cache \
+    libxml2 \
+    libxslt \
+    libsodium \
+    postgresql-libs \
+    supervisor \
+    su-exec \
+    tzdata; \
+  rm -rf /usr/share/info/*; \
+  rm -rf /usr/share/man/*; \
+  rm -rf /usr/share/doc/*
 
 RUN set -eux; \
   addgroup -S -g 500 $POMPA_GROUP; \
@@ -32,22 +35,30 @@ ENV RAILS_LOG_TO_STDOUT true
 
 RUN set -eux; \
   gem update --system; \
-  gem install bundler rake
+  gem install bundler rake; \
+  bundle config --global frozen 1; \
+  bundle config --global set without 'development test'
 
 RUN set -eux; \
-  bundle config --global frozen 1; \
-  bundle config --global set without 'development test'; \
-  bundle install
-
-RUN apk del --no-cache \
-  build-base
-
-RUN rm -rf /usr/share/info/* && \
-  rm -rf /usr/share/man/* && \
-  rm -rf /usr/share/doc/* && \
-  rm -rf /var/tmp/* && \
-  rm -rf /tmp/* && \
-  find /var/log -type f -regex '.*\.\([0-9]\|gz\)$' -print0 | xargs -0 rm -f && \
+  apk add --update --no-cache \
+    build-base \
+    libxml2-dev \
+    libxslt-dev \
+    libsodium-dev \
+    postgresql-dev; \
+  bundle install; \
+  apk del --no-cache \
+    build-base \
+    libxml2-dev \
+    libxslt-dev \
+    libsodium-dev \
+    postgresql-dev; \
+  rm -rf /usr/share/info/*; \
+  rm -rf /usr/share/man/*; \
+  rm -rf /usr/share/doc/*; \
+  rm -rf /var/tmp/*; \
+  rm -rf /tmp/*; \
+  find /var/log -type f -regex '.*\.\([0-9]\|gz\)$' -print0 | xargs -0 rm -f; \
   find /var/log -type f -exec truncate -s 0 {} \;
 
 COPY pompa-api/ ./
