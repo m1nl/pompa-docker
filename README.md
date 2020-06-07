@@ -25,15 +25,15 @@ You will need the following things properly installed on your computer:
 Look for config files in the following directories:
 
 * app/config
-* web/config
-* web/nginx
+* facade/config
+* facade/nginx
 * redis
 
 ## Building and running
 
 * `docker-compose build`
 * `docker-compose up`
-* open http://localhost:8082/ in a modern web browser
+* open http://localhost:8081/ in a modern web browser
 
 ## Upgrading submodules
 
