@@ -32,13 +32,13 @@ services:
         traefik.enable: "true"
         traefik.admin.backend: "pompa-admin"
         traefik.admin.frontend.rule: "Host:<change me>" # pompa admin host
-        traefik.admin.port: "8082"
+        traefik.admin.port: "8081"
         traefik.admin.frontend.auth.basic.usersFile: "/storage/htpasswd-<change me>" # htpasswd file for pompa admin panel authentication
 
         # BEGIN: sample public API configuration for phishing sites
         traefik.public.backend: "phishing-<change me>" # backend name
         traefik.public.frontend.rule: "Host:<change me>" # host configuration (i.e. myphishingsite.example.com>
-        traefik.public.port: "8081"
+        traefik.public.port: "8082"
         # END
 
         traefik.tags: "traefik-public"
