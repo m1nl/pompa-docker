@@ -83,7 +83,8 @@ http {
         location ~* \.(?:css|js)$ {
             access_log off;
             log_not_found off;
-            add_header Cache-Control "no-cache, public, must-revalidate, proxy-revalidate";
+            expires 5m;
+            add_header Cache-Control "public";
         }
 
         location ~* \.(?:jpg|jpeg|gif|png|ico|xml)$ {
