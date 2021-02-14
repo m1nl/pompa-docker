@@ -77,48 +77,79 @@ http {
 
         location / {
             try_files $uri /index.html;
+            expires -1;
+        }
 
-            location {{ .Env.POMPA_ADMIN_API_PREFIX }} {
-                client_max_body_size 64M;
+        location ~* \.(?:css|js)$ {
+            access_log off;
+            log_not_found off;
+            add_header Cache-Control "no-cache, public, must-revalidate, proxy-revalidate";
+        }
 
-                proxy_pass_request_headers on;
+        location ~* \.(?:jpg|jpeg|gif|png|ico|xml)$ {
+            access_log off;
+            log_not_found off;
+            expires 5m;
+            add_header Cache-Control "public";
+        }
 
-                proxy_set_header Host $http_host;
+        location ~* \.(?:eot|woff|woff2|ttf|svg|otf) {
+            access_log off;
+            log_not_found off;
+            expires 5m;
+            add_header Cache-Control "public";
 
-                proxy_set_header X-Forwarded-Server $host;
-                proxy_set_header X-Forwarded-By $server_addr:$server_port;
-                proxy_set_header X-Forwarded-Proto $proxied_scheme;
-                proxy_set_header X-Forwarded-Port $server_port;
+            types { font/opentype otf; }
+            types { application/vnd.ms-fontobject eot; }
+            types { font/truetype ttf; }
+            types { application/font-woff woff; }
+            types { font/x-woff woff2; }
+        }
 
-                proxy_set_header X-Forwarded-For $remote_addr;
-                proxy_set_header X-Real-IP $remote_addr;
-                proxy_set_header CLIENT_IP $remote_addr;
+        location ~ /\. {
+            deny all;
+        }
 
-                proxy_set_header Accept-Encoding "";
+        location {{ .Env.POMPA_ADMIN_API_PREFIX }} {
+            client_max_body_size 64M;
 
-                proxy_hide_header X-Content-Type-Options;
-                proxy_hide_header X-XSS-Protection;
+            proxy_pass_request_headers on;
 
-                proxy_hide_header X-Frame-Options;
-                proxy_hide_header Content-Security-Policy;
+            proxy_set_header Host $http_host;
 
-                proxy_buffer_size 4k;
-                proxy_buffers 4 32k;
-                proxy_busy_buffers_size 64k;
+            proxy_set_header X-Forwarded-Server $host;
+            proxy_set_header X-Forwarded-By $server_addr:$server_port;
+            proxy_set_header X-Forwarded-Proto $proxied_scheme;
+            proxy_set_header X-Forwarded-Port $server_port;
+
+            proxy_set_header X-Forwarded-For $remote_addr;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header CLIENT_IP $remote_addr;
+
+            proxy_set_header Accept-Encoding "";
+
+            proxy_hide_header X-Content-Type-Options;
+            proxy_hide_header X-XSS-Protection;
+
+            proxy_hide_header X-Frame-Options;
+            proxy_hide_header Content-Security-Policy;
+
+            proxy_buffer_size 4k;
+            proxy_buffers 4 32k;
+            proxy_busy_buffers_size 64k;
+
+            proxy_pass http://pompa-admin-api;
+
+            {{ if eq .Env.POMPA_SENDFILE_ENABLE "true" }}
+
+            location {{ .Env.POMPA_ADMIN_API_PREFIX }}/workers/files {
+                proxy_set_header X-Sendfile-Type X-Accel-Redirect;
+                proxy_set_header X-Accel-Mapping "{{ .Env.POMPA_SENDFILE_MAPPING }}=/__send_file_accel";
 
                 proxy_pass http://pompa-admin-api;
-
-                {{ if eq .Env.POMPA_SENDFILE_ENABLE "true" }}
-
-                location {{ .Env.POMPA_ADMIN_API_PREFIX }}/workers/files {
-                    proxy_set_header X-Sendfile-Type X-Accel-Redirect;
-                    proxy_set_header X-Accel-Mapping "{{ .Env.POMPA_SENDFILE_MAPPING }}=/__send_file_accel";
-
-                    proxy_pass http://pompa-admin-api;
-                }
-
-                {{ end }}
             }
+
+            {{ end }}
         }
 
         error_page 404 /404.html;
@@ -188,7 +219,7 @@ http {
         location = /favicon.ico {
             return 204;
             access_log off;
-            log_not_found  off;
+            log_not_found off;
         }
 
         error_page 404 /404.html;
