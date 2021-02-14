@@ -83,11 +83,11 @@ http {
         location ~* \.(?:css|js)$ {
             access_log off;
             log_not_found off;
-            expires 5m;
+            expires 30d;
             add_header Cache-Control "public";
         }
 
-        location ~* \.(?:jpg|jpeg|gif|png|ico|xml)$ {
+        location ~* \.(?:jpe?g|gif|png|ico|xml)$ {
             access_log off;
             log_not_found off;
             expires 5m;
