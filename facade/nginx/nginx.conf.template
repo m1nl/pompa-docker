@@ -99,12 +99,6 @@ http {
             log_not_found off;
             expires 5m;
             add_header Cache-Control "public";
-
-            types { font/opentype otf; }
-            types { application/vnd.ms-fontobject eot; }
-            types { font/truetype ttf; }
-            types { application/font-woff woff; }
-            types { font/x-woff woff2; }
         }
 
         location ~ /\. {

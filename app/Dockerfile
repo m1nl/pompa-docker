@@ -34,6 +34,7 @@ ENV RAILS_ENV production
 ENV RAILS_LOG_TO_STDOUT true
 
 RUN set -eux; \
+  echo "gem: --no-document" > .gemrc; \
   gem update --system; \
   gem install bundler rake; \
   bundle config --global frozen 1; \
