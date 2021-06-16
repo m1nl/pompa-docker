@@ -3,10 +3,10 @@ FROM node:erbium AS pompa-build
 WORKDIR /usr/src/app
 ENV PATH=/usr/src/app/bin:$PATH
 
-RUN npm install -g npm@latest
 RUN npm install -g ember-cli
 
 COPY pompa/package*.json ./
+COPY pompa/patches ./patches
 RUN npm ci --no-audit
 
 COPY pompa/ ./
