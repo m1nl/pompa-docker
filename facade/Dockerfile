@@ -7,7 +7,7 @@ RUN npm install -g ember-cli
 
 COPY pompa/package*.json ./
 COPY pompa/patches ./patches
-RUN npm ci --no-audit
+RUN npm ci --no-audit --unsafe-perm
 
 COPY pompa/ ./
 COPY config/ ./config/
