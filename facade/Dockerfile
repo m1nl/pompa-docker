@@ -5,19 +5,19 @@ FROM node:erbium AS pompa-build
 
 ARG GITHUB_KNOWN_HOSTS
 
-WORKDIR /usr/src/app
+RUN npm install -g ember-cli
 
-ENV PATH=/usr/src/app/bin:$PATH
+USER builder:builder
 
 RUN set -eux ; \
-  mkdir -p /root/.ssh ; \
+  mkdir -p /builder/.ssh ; \
   echo "${GITHUB_KNOWN_HOSTS}" > /root/.ssh/known_hosts
 
-RUN npm install -g ember-cli
+ENV PATH=/builder/bin:$PATH
 
 COPY pompa/package*.json ./
 COPY pompa/patches ./patches
-RUN npm ci --no-audit --unsafe-perm
+RUN npm ci --no-audit
 
 COPY pompa/ ./
 COPY config/ ./config/
@@ -29,7 +29,7 @@ FROM nginx:mainline-alpine
 RUN apk add --update --no-cache \
   gomplate
 
-COPY --from=pompa-build /usr/src/app/dist/ /var/www/pompa-admin/
+COPY --from=pompa-build /builder/dist/ /var/www/pompa-admin/
 
 RUN rm -rf /var/www/default
 
