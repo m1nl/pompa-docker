@@ -1,11 +1,30 @@
 # 2048 SHA256:nThbg6kXUpJWGl7E1IGOCspRomTxdCARLviKw6E5SY8 github.com (RSA)
 ARG GITHUB_KNOWN_HOSTS="github.com ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAq2A7hRGmdnm9tUDbO9IDSwBK6TbQa+PXYPCPy6rbTrTtw7PHkccKrpp0yVhp5HdEIcKr6pLlVDBfOLX9QUsyCOV0wzfjIJNlGEYsdlLJizHhbn2mUjvSAHQqZETYP81eFzLQNnPHt4EVVUh7VfDESU84KezmD5QlWpXLmvU31/yMf+Se8xhHTvKSCZIFImWwoG6mbUoWf9nzpIoaSjB+weqqUUmpaaasXVal72J+UX2B+2RPW3RcT0eOzQgqlJL3RKrTJvdsjE3JEAvGq3lGHSZXy28G3skua2SmVi/w4yCE6gbODqnTWlg7+wC604ydGXA8VJiS5ap43JXiUFFAaQ=="
 
-FROM node:erbium AS pompa-build
+FROM node:erbium-buster-slim AS pompa-build
 
 ARG GITHUB_KNOWN_HOSTS
 
+RUN set -eux; \
+  apt-get update; \
+  apt-get install -y git curl bash wget adduser; \
+  apt-get -y --purge autoremove; \
+  apt-get -y clean; \
+  rm -rf /var/lib/apt/lists/*; \
+  rm -rf /usr/share/man/*; \
+  rm -rf /usr/share/doc/*; \
+  rm -rf /var/tmp/*; \
+  rm -rf /tmp/*; \
+  find /var/log -type f -regex '.*\.\([0-9]\|gz\)$' -print0 | xargs -0 rm -f; \
+  find /var/log -type f -print0 | xargs -0 truncate -s 0
+
 RUN npm install -g ember-cli
+
+RUN set -eux; \
+  addgroup --system --gid 500 builder; \
+  adduser --system --home /builder --no-create-home --gid 500 --uid 500 builder; \
+  mkdir -p /builder; \
+  chown builder:builder /builder
 
 USER builder
 
