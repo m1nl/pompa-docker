@@ -23,16 +23,18 @@ RUN npm install -g ember-cli
 RUN set -eux; \
   addgroup --system --gid 500 builder; \
   adduser --system --home /builder --no-create-home --gid 500 --uid 500 builder; \
-  mkdir -p /builder; \
-  chown builder:builder /builder
+  mkdir -p /builder /builder/bin; \
+  chown builder:builder -R /builder
+
+WORKDIR /builder
 
 USER builder
+
+ENV PATH=/builder/bin:$PATH
 
 RUN set -eux ; \
   mkdir -p /builder/.ssh ; \
   echo "${GITHUB_KNOWN_HOSTS}" > /builder/.ssh/known_hosts
-
-ENV PATH=/builder/bin:$PATH
 
 COPY --chown=builder pompa/package*.json ./
 COPY --chown=builder pompa/patches ./patches
