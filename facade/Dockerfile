@@ -30,7 +30,7 @@ USER builder
 
 RUN set -eux ; \
   mkdir -p /builder/.ssh ; \
-  echo "${GITHUB_KNOWN_HOSTS}" > /root/.ssh/known_hosts
+  echo "${GITHUB_KNOWN_HOSTS}" > /builder/.ssh/known_hosts
 
 ENV PATH=/builder/bin:$PATH
 
