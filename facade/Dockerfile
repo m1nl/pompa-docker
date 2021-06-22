@@ -7,7 +7,7 @@ ARG GITHUB_KNOWN_HOSTS
 
 RUN npm install -g ember-cli
 
-USER builder:builder
+USER builder
 
 RUN set -eux ; \
   mkdir -p /builder/.ssh ; \
@@ -15,12 +15,12 @@ RUN set -eux ; \
 
 ENV PATH=/builder/bin:$PATH
 
-COPY pompa/package*.json ./
-COPY pompa/patches ./patches
+COPY --chown=builder pompa/package*.json ./
+COPY --chown=builder pompa/patches ./patches
 RUN npm ci --no-audit
 
-COPY pompa/ ./
-COPY config/ ./config/
+COPY --chown=builder pompa/ ./
+COPY --chown=builder config/ ./config/
 
 RUN ember build --environment=production
 
