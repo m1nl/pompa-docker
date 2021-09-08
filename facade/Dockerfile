@@ -37,7 +37,7 @@ RUN set -eux ; \
   echo "${GITHUB_KNOWN_HOSTS}" > /builder/.ssh/known_hosts
 
 COPY --chown=builder pompa/package*.json ./
-COPY --chown=builder pompa/patches ./patches
+
 RUN npm ci --no-audit
 
 COPY --chown=builder pompa/ ./
