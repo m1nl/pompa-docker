@@ -35,6 +35,8 @@ http {
     gzip_proxied expired no-cache no-store private auth;
     gzip_types application/x-javascript text/css application/javascript text/javascript text/plain text/xml application/json application/vnd.ms-fontobject application/x-font-opentype application/x-font-truetype application/x-font-ttf application/xml font/eot font/opentype font/otf image/svg+xml image/vnd.microsoft.icon;
 
+    proxy_cache_path /spool/nginx/proxy-temp levels=1:2 keys_zone=public_cache:10m max_size={{ .Env.POMPA_PUBLIC_CACHE_SIZE }} inactive=60m use_temp_path=off;
+
     reset_timedout_connection on;
 
     real_ip_header X-Real-IP;
@@ -207,6 +209,9 @@ http {
             proxy_buffer_size 4k;
             proxy_buffers 4 32k;
             proxy_busy_buffers_size 64k;
+
+            proxy_cache public_cache;
+            proxy_cache_key $uri;
 
             proxy_pass http://pompa-public-api;
         }

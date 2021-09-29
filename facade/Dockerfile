@@ -68,11 +68,15 @@ COPY pompa-public/ /var/www/pompa-public/
 
 COPY nginx/ /etc/nginx/
 
-RUN mkdir -p /etc/nginx/private
 RUN set -eux; \
+  mkdir -p /spool/nginx/proxy-temp; \
+  mkdir -p /etc/nginx/private; \
+  chmod u=rwx,g=,o= /spool/nginx/proxy-temp; \
+  chown nginx:nginx /spool/nginx/proxy-temp; \
   chmod u=rwx,g=,o= /etc/nginx/private; \
   chown nginx:nginx /etc/nginx/private
 
+VOLUME /spool/nginx/proxy-temp
 VOLUME /etc/nginx/private
 
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
