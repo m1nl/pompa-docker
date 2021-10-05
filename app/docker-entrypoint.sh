@@ -43,7 +43,6 @@ if [ "$MANAGE_DB" == "true" ] ; then
 fi
 
 $RAKE db:abort_if_pending_migrations
-$RAKE pompa:clear_cache
 rm -rf tmp/cache/* > /dev/null 2>&1
 
 trap reload 1
