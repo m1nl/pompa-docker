@@ -53,13 +53,13 @@ http {
     {{ if eq .Env.POMPA_ADMIN_ENABLE "true" }}
 
     upstream pompa-admin-api {
-        server {{ .Env.POMPA_ADMIN_API }};
+        server {{ .Env.POMPA_ADMIN_ENDPOINT }};
     }
 
     server {
         listen 8081;
 
-        server_name {{ .Env.POMPA_ADMIN_HOST }};
+        server_name {{ .Env.POMPA_ADMIN_HOSTNAME }};
         root /var/www/pompa-admin;
 
         add_header X-Content-Type-Options nosniff;
@@ -107,7 +107,7 @@ http {
             deny all;
         }
 
-        location {{ .Env.POMPA_ADMIN_API_PREFIX }} {
+        location {{ .Env.POMPA_ADMIN_ENDPOINT_PREFIX }} {
             client_max_body_size 64M;
 
             proxy_pass_request_headers on;
@@ -139,7 +139,7 @@ http {
 
             {{ if eq .Env.POMPA_SENDFILE_ENABLE "true" }}
 
-            location {{ .Env.POMPA_ADMIN_API_PREFIX }}/workers/files {
+            location {{ .Env.POMPA_ADMIN_ENDPOINT_PREFIX }}/workers/files {
                 proxy_set_header X-Sendfile-Type X-Accel-Redirect;
                 proxy_set_header X-Accel-Mapping "{{ .Env.POMPA_SENDFILE_MAPPING }}=/__send_file_accel";
 
@@ -173,7 +173,7 @@ http {
     {{ if eq .Env.POMPA_PUBLIC_ENABLE "true" }}
 
     upstream pompa-public-api {
-        server {{ .Env.POMPA_PUBLIC_API }};
+        server {{ .Env.POMPA_PUBLIC_ENDPOINT }};
     }
 
     server {
@@ -185,7 +185,7 @@ http {
         add_header X-XSS-Protection "1; mode=block";
 
         location / {
-            rewrite /(.*) {{ .Env.POMPA_PUBLIC_API_PREFIX }}/public/$1 break;
+            rewrite /(.*) {{ .Env.POMPA_PUBLIC_ENDPOINT_PREFIX }}/public/$1 break;
 
             proxy_pass_request_headers on;
             proxy_intercept_errors on;
