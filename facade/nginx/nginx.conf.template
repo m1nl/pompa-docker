@@ -211,7 +211,7 @@ http {
             proxy_busy_buffers_size 64k;
 
             proxy_cache public_cache;
-            proxy_cache_key $uri;
+            proxy_cache_key "$uri?$args";
 
             proxy_pass http://pompa-public-api;
         }
