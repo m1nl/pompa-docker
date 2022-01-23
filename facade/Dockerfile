@@ -18,7 +18,10 @@ RUN set -eux; \
   find /var/log -type f -regex '.*\.\([0-9]\|gz\)$' -print0 | xargs -0 rm -f; \
   find /var/log -type f -print0 | xargs -0 truncate -s 0
 
-RUN npm install -g ember-cli
+RUN set -eux; \
+  npm -g install npm@latest; \
+  npm -g cache clean --force; \
+  npm install -g ember-cli
 
 RUN set -eux; \
   addgroup --system --gid 500 builder; \
