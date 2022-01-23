@@ -9,5 +9,9 @@ chmod 0700 .secrets
 
 [ -f .secrets/pompa_db_password ] || rand 16 > .secrets/pompa_db_password
 [ -f .secrets/postgres_db_password ] || rand 16 > .secrets/postgres_db_password
+
 [ -f .secrets/secret_key_base ] || rand 64 > .secrets/secret_key_base
-[ -f .secrets/database_key ] || rand 32 > .secrets/database_key
+
+[ -f .secrets/active_record_primary_key ] || rand 32 > .secrets/active_record_primary_key
+[ -f .secrets/active_record_deterministic_key ] || rand 32 > .secrets/active_record_deterministic_key
+[ -f .secrets/active_record_key_derivation_salt ] || rand 32 > .secrets/active_record_key_derivation_salt

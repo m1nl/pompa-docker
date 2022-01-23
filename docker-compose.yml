@@ -16,7 +16,9 @@ services:
     secrets:
       - pompa_db_password
       - secret_key_base
-      - database_key
+      - active_record_primary_key
+      - active_record_deterministic_key
+      - active_record_key_derivation_salt
   facade:
     build: "./facade"
     volumes:
@@ -53,5 +55,9 @@ secrets:
     file: ./.secrets/postgres_db_password
   secret_key_base:
     file: ./.secrets/secret_key_base
-  database_key:
-    file: ./.secrets/database_key
+  active_record_primary_key:
+    file: ./.secrets/active_record_primary_key
+  active_record_deterministic_key:
+    file: ./.secrets/active_record_deterministic_key
+  active_record_key_derivation_salt:
+    file: ./.secrets/active_record_key_derivation_salt
