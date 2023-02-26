@@ -29,7 +29,6 @@ ENV NODE_OPTIONS="--openssl-legacy-provider"
 
 RUN set -eux; \
   npm -g install npm@latest; \
-  npm -g cache clean --force; \
   npm install -g ember-cli@latest
 
 RUN set -eux; \
