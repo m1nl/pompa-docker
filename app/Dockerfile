@@ -69,8 +69,7 @@ RUN ./genrevision.sh
 
 RUN set -eux; \
   mkdir -p $POMPA_HOME/tmp/shared; \
-  chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME; \
-  chmod o+rX -R /usr/local/bundle/gems/mail-2.8.0 # temporary fix for https://github.com/mikel/mail/issues/1489
+  chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME
 
 ENV SHARED_TMPDIR=$POMPA_HOME/tmp/shared
 
