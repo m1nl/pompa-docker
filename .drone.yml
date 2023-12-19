@@ -1,37 +1,39 @@
+---
 kind: pipeline
+type: kubernetes
 name: default
 
 clone:
   disable: true
 
 steps:
-- name: update_cd
-  image: docker:git
-  environment:
-    POMPA_CD_DEPLOY_KEY:
-      from_secret: pompa_cd_deploy_key
-  commands:
-  - export SHORT_COMMIT="$(echo $DRONE_COMMIT | cut -c1-7)"
-  - mkdir -p ~/.ssh
-  - echo -ne "$POMPA_CD_DEPLOY_KEY" > ~/.ssh/id_rsa
-  - ssh-keyscan -H github.com > ~/.ssh/known_hosts
-  - chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
-  - mkdir pompa-cd
-  - cd pompa-cd
-  - git init
-  - git config user.email "drone@nalewajski.pl"
-  - git config user.name "Drone CI"
-  - git config merge.ours.driver true
-  - git remote add origin git@github.com:m1nl/pompa-cd.git
-  - git remote add upstream https://github.com/m1nl/pompa-docker.git
-  - git fetch origin
-  - git fetch upstream
-  - git checkout -b master --track origin/master
-  - git checkout -b upstream --track upstream/master
-  - git checkout master
-  - git checkout --theirs upstream -- facade/pompa
-  - git checkout --theirs upstream -- app/pompa-api
-  - git commit --allow-empty -m "$DRONE_COMMIT_MESSAGE"
-  - git merge --squash --strategy=recursive --strategy-option=theirs upstream
-  - git commit --allow-empty --amend --no-edit
-  - git push origin master
+  - name: update_cd
+    image: docker:git
+    environment:
+      POMPA_CD_DEPLOY_KEY:
+        from_secret: pompa_cd_deploy_key
+    commands:
+      - export SHORT_COMMIT="$(echo $DRONE_COMMIT | cut -c1-7)"
+      - mkdir -p ~/.ssh
+      - echo -ne "$POMPA_CD_DEPLOY_KEY" > ~/.ssh/id_rsa
+      - ssh-keyscan -H github.com > ~/.ssh/known_hosts
+      - chmod 600 ~/.ssh/id_rsa ~/.ssh/known_hosts
+      - mkdir pompa-cd
+      - cd pompa-cd
+      - git init
+      - git config user.email "drone@nalewajski.pl"
+      - git config user.name "Drone CI"
+      - git config merge.ours.driver true
+      - git remote add origin git@github.com:m1nl/pompa-cd.git
+      - git remote add upstream https://github.com/m1nl/pompa-docker.git
+      - git fetch origin
+      - git fetch upstream
+      - git checkout -b master --track origin/master
+      - git checkout -b upstream --track upstream/master
+      - git checkout master
+      - git checkout --theirs upstream -- facade/pompa
+      - git checkout --theirs upstream -- app/pompa-api
+      - git commit --allow-empty -m "$DRONE_COMMIT_MESSAGE"
+      - git merge --squash --strategy=recursive --strategy-option=theirs upstream
+      - git commit --allow-empty --amend --no-edit
+      - git push origin master
