@@ -36,7 +36,7 @@ ENV RAILS_LOG_TO_STDOUT true
 RUN set -eux; \
   echo "gem: --no-document" > .gemrc; \
   gem update --system; \
-  gem install bundler rake; \
+  gem install bundler; \
   bundle config --global frozen 1; \
   bundle config --global set without 'development test'
 
