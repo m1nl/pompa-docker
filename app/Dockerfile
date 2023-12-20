@@ -1,4 +1,4 @@
-FROM ruby:3.1-alpine
+FROM ruby:3.2-alpine3.18
 
 ENV POMPA_USER pompa
 ENV POMPA_GROUP pompa
@@ -38,6 +38,7 @@ RUN set -eux; \
   gem update --system; \
   gem install bundler; \
   bundle config --global frozen 1; \
+  bundle config --global disable_shared_gems 1; \
   bundle config --global set without 'development test'
 
 RUN set -eux; \
