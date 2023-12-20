@@ -1,8 +1,15 @@
-FROM ruby:3.2-alpine3.18
+ARG RUBY_VERSION=3.2
+ARG RUBY_ABI_VERSION=3.2.0
+
+FROM ruby:${RUBY_VERSION}-alpine3.18
 
 ENV POMPA_USER pompa
 ENV POMPA_GROUP pompa
 ENV POMPA_HOME /app
+
+ARG RUBY_VERSION
+ENV RUBY_VERSION $RUBY_VERSION
+ENV RUBY_ABI_VERSION $RUBY_ABI_VERSION
 
 RUN set -eux; \
   apk add --update --no-cache \
@@ -32,6 +39,7 @@ ENV BUNDLE_RETRY=3
 
 ENV BUNDLE_DISABLE_SHARED_GEMS=1
 ENV BUNDLE_WITHOUT="development test"
+ENV BUNDLE_PATH="/app/vendor/bundle"
 
 ENV RAILS_ENV production
 ENV RAILS_LOG_TO_STDOUT true
@@ -82,7 +90,7 @@ RUN mkdir -p /usr/local/wrappers
 COPY wrapper.sh /usr/local/wrappers/.wrapper.sh
 
 RUN set -eux; \
-  for i in /usr/local/bundle/bin/*; \
+  for i in /app/vendor/bundle/ruby/$RUBY_ABI_VERSION/bin/*; \
     do ln -s /usr/local/wrappers/.wrapper.sh /usr/local/wrappers/`basename $i`; \
   done
 ENV PATH="/usr/local/wrappers:$PATH"
