@@ -27,5 +27,5 @@ steps:
       - git fetch origin master
       - git fetch upstream master
       - git checkout -b master --track origin/master
-      - git pull upstream --rebase
+      - git pull upstream master --rebase
       - git push origin master --force

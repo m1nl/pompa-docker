@@ -9,6 +9,8 @@ ENV POMPA_HOME /app
 
 ARG RUBY_VERSION
 ENV RUBY_VERSION $RUBY_VERSION
+
+ARG RUBY_ABI_VERSION
 ENV RUBY_ABI_VERSION $RUBY_ABI_VERSION
 
 RUN set -eux; \
@@ -78,13 +80,13 @@ COPY config/ ./config/
 RUN ./genrevision.sh
 
 RUN set -eux; \
-  mkdir -p $POMPA_HOME/tmp/shared; \
-  chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME
+  mkdir -p $POMPA_HOME/tmp/shared $POMPA_HOME/storage; \
+  chown $POMPA_USER:$POMPA_GROUP -R $POMPA_HOME/tmp $POMPA_HOME/storage $POMPA_HOME/log
 
 ENV SHARED_TMPDIR=$POMPA_HOME/tmp/shared
 
-VOLUME /app/storage
-VOLUME /app/tmp/shared
+VOLUME $POMPA_HOME/storage
+VOLUME $POMPA_HOME/tmp/shared
 
 RUN mkdir -p /usr/local/wrappers
 COPY wrapper.sh /usr/local/wrappers/.wrapper.sh
