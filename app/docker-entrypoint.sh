@@ -4,6 +4,7 @@ if [ $# -gt 0 ] ; then
   COMMAND="$1"
   shift
 
+  export PATH="/usr/local/wrappers:$PATH"
   exec "$COMMAND" "$@"
   exit $?
 fi

@@ -1,5 +1,4 @@
 ARG RUBY_VERSION=3.2
-ARG RUBY_ABI_VERSION=3.2.0
 
 FROM ruby:${RUBY_VERSION}-alpine3.18
 
@@ -9,9 +8,6 @@ ENV POMPA_HOME /app
 
 ARG RUBY_VERSION
 ENV RUBY_VERSION $RUBY_VERSION
-
-ARG RUBY_ABI_VERSION
-ENV RUBY_ABI_VERSION $RUBY_ABI_VERSION
 
 RUN set -eux; \
   apk add --update --no-cache \
@@ -92,10 +88,9 @@ RUN mkdir -p /usr/local/wrappers
 COPY wrapper.sh /usr/local/wrappers/.wrapper.sh
 
 RUN set -eux; \
-  for i in /app/vendor/bundle/ruby/$RUBY_ABI_VERSION/bin/*; \
+  for i in rake puma pumactl rails sidekiq sidekiqmon; \
     do ln -s /usr/local/wrappers/.wrapper.sh /usr/local/wrappers/`basename $i`; \
   done
-ENV PATH="/usr/local/wrappers:$PATH"
 
 COPY supervisord.conf /etc/supervisord.conf
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
