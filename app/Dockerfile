@@ -30,16 +30,16 @@ COPY pompa-api/Gemfile.lock ./
 ENV BUNDLE_JOBS=4
 ENV BUNDLE_RETRY=3
 
+ENV BUNDLE_DISABLE_SHARED_GEMS=1
+ENV BUNDLE_WITHOUT="development test"
+
 ENV RAILS_ENV production
 ENV RAILS_LOG_TO_STDOUT true
 
 RUN set -eux; \
   echo "gem: --no-document" > .gemrc; \
   gem update --system; \
-  gem install bundler; \
-  bundle config --global frozen 1; \
-  bundle config --global disable_shared_gems 1; \
-  bundle config --global set without 'development test'
+  gem install bundler
 
 RUN set -eux; \
   apk add --update --no-cache \
@@ -48,6 +48,7 @@ RUN set -eux; \
     libxslt-dev \
     libsodium-dev \
     postgresql-dev; \
+  bundle config set deployment true; \
   bundle install; \
   apk del --no-cache \
     build-base \
