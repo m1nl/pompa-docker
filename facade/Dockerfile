@@ -44,6 +44,7 @@ RUN set -eux ; \
   mkdir -p /builder/.ssh ; \
   echo "${GITHUB_KNOWN_HOSTS}" > /builder/.ssh/known_hosts
 
+COPY --chown=builder pompa/patches ./patches
 COPY --chown=builder pompa/package*.json ./
 
 RUN npm ci --no-audit
