@@ -25,10 +25,8 @@ RUN set -eux; \
   find /var/log -type f -regex '.*\.\([0-9]\|gz\)$' -print0 | xargs -0 rm -f; \
   find /var/log -type f -print0 | xargs -0 truncate -s 0
 
-ENV NODE_OPTIONS="--openssl-legacy-provider"
-
 RUN set -eux; \
-  npm -g install npm@latest; \
+  npm -g install npm@latest
 
 RUN set -eux; \
   addgroup --system --gid 500 builder; \
